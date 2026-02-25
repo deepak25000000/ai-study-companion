@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Buddy · Smart Learning Assistant</title>
+    <meta name="description"
+        content="Your personal AI study companion for explanations, summaries, quizzes, and flashcards">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div class="logo-text">
+                        <h1>Study Buddy</h1>
+                        <span>AI Learning Assistant</span>
+                    </div>
+                </div>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- New Chat Button -->
+            <button class="new-chat-btn" id="newChatBtn">
+                <i class="fas fa-plus"></i>
+                New Study Session
+            </button>
+
+            <!-- Study Modes - Clearly Visible -->
+            <div class="modes-section">
+                <h3 class="section-title">Study Modes</h3>
+                <div class="modes-grid">
+                    <button class="mode-card active" data-mode="explain" id="modeExplain">
+                        <div class="mode-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="mode-info">
+                            <span class="mode-name">Explain</span>
+                            <span class="mode-desc">Detailed explanations</span>
+                        </div>
+                    </button>
+
+                    <button class="mode-card" data-mode="summarize" id="modeSummarize">
+                        <div class="mode-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                            <i class="fas fa-compress"></i>
+                        </div>
+                        <div class="mode-info">
+                            <span class="mode-name">Summarize</span>
+                            <span class="mode-desc">Key points & overview</span>
+                        </div>
+                    </button>
+
+                    <button class="mode-card" data-mode="quiz" id="modeQuiz">
+                        <div class="mode-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="mode-info">
+                            <span class="mode-name">Quiz</span>
+                            <span class="mode-desc">Test your knowledge</span>
+                        </div>
+                    </button>
+
+                    <button class="mode-card" data-mode="flashcard" id="modeFlashcard">
+                        <div class="mode-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="mode-info">
+                            <span class="mode-name">Flashcards</span>
+                            <span class="mode-desc">Quick learning cards</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat History -->
+            <div class="history-section">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Recent Sessions
+                </h3>
+                <div class="history-list" id="historyList">
+                    <!-- History items will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Clear Chat Button -->
+            <button class="clear-chat-btn" id="clearChatBtn">
+                <i class="fas fa-trash-alt"></i>
+                Clear Conversation
+            </button>
+
+            <div class="sidebar-footer">
+                <div class="status">
+                    <span class="status-dot"></span>
+                    <span>AI Ready</span>
+                </div>
+                <span class="version">v1.0</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <button class="menu-btn" id="menuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="current-mode-badge" id="currentModeBadge">
+                    <i class="fas fa-book-open"></i>
+                    <span>Explain Mode</span>
+                </div>
+
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn" data-level="simple">Simple</button>
+                    <button class="difficulty-btn active" data-level="medium">Medium</button>
+                    <button class="difficulty-btn" data-level="complex">Complex</button>
+                </div>
+            </div>
+
+            <!-- Quiz Options Bar (visible only in quiz mode) -->
+            <div class="quiz-options-bar" id="quizOptionsBar">
+                <div class="quiz-option-group">
+                    <span class="option-label">Questions:</span>
+                    <div class="option-buttons">
+                        <button class="option-btn active" data-num="5">5</button>
+                        <button class="option-btn" data-num="10">10</button>
+                        <button class="option-btn" data-num="15">15</button>
+                    </div>
+                </div>
+                <div class="quiz-option-group">
+                    <span class="option-label">Timer:</span>
+                    <div class="option-buttons">
+                        <button class="option-btn active" data-timer="30">30s</button>
+                        <button class="option-btn" data-timer="60">60s</button>
+                        <button class="option-btn" data-timer="0">Off</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="chat-container" id="chatContainer">
+                <!-- Welcome Screen -->
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h2>What would you like to study today?</h2>
+                    <p class="welcome-subtitle">Choose a study mode and start learning with AI</p>
+
+                    <div class="quick-actions">
+                        <div class="quick-action" data-topic="Machine Learning">
+                            <i class="fas fa-robot"></i>
+                            Machine Learning
+                        </div>
+                        <div class="quick-action" data-topic="World War II">
+                            <i class="fas fa-history"></i>
+                            World War II
+                        </div>
+                        <div class="quick-action" data-topic="Photosynthesis">
+                            <i class="fas fa-leaf"></i>
+                            Photosynthesis
+                        </div>
+                        <div class="quick-action" data-topic="Data Structures">
+                            <i class="fas fa-code"></i>
+                            Data Structures
+                        </div>
+                        <div class="quick-action" data-topic="Quantum Physics">
+                            <i class="fas fa-atom"></i>
+                            Quantum Physics
+                        </div>
+                    </div>
+
+                    <div class="mode-preview">
+                        <div class="preview-item">
+                            <i class="fas fa-book-open" style="color: #10b981;"></i>
+                            <span>Explain topics in detail</span>
+                        </div>
+                        <div class="preview-item">
+                            <i class="fas fa-compress" style="color: #8b5cf6;"></i>
+                            <span>Get quick summaries</span>
+                        </div>
+                        <div class="preview-item">
+                            <i class="fas fa-question-circle" style="color: #f59e0b;"></i>
+                            <span>Test with interactive quizzes</span>
+                        </div>
+                        <div class="preview-item">
+                            <i class="fas fa-layer-group" style="color: #ef4444;"></i>
+                            <span>Learn with flashcards</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages will be inserted here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <textarea id="messageInput" class="message-input"
+                        placeholder="Ask anything or enter a topic to study..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span><i class="fas fa-brain"></i> Context-aware AI assistant</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/script.js"></script>
+</body>
+
+</html>
