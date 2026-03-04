@@ -62,8 +62,10 @@ exports.chatWithContext = async (req, res) => {
         if (mongoose.connection.readyState === 1) {
             if (!session) {
                 // Create new session
+                const userId = req.user ? req.user.userId : null;
                 session = new ChatSession({
                     sessionId: sid,
+                    userId: userId,
                     title: message.substring(0, 60) + (message.length > 60 ? '...' : ''),
                     messages: []
                 });
@@ -111,8 +113,14 @@ exports.getChatHistory = async (req, res) => {
             return res.json({ sessions: [] });
         }
 
-        const sessions = await ChatSession.find({})
-            .select('sessionId title createdAt updatedAt messages')
+        // Filter by userId if provided
+        const query = {};
+        if (req.query.userId) {
+            query.userId = req.query.userId;
+        }
+
+        const sessions = await ChatSession.find(query)
+            .select('sessionId title createdAt updatedAt messages userId')
             .sort({ updatedAt: -1 })
             .limit(50)
             .lean();

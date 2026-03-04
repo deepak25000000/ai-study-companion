@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const apiRoutes = require('./routes/api');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// MongoDB connection (optional)
+// MongoDB connection
 if (process.env.MONGODB_URI) {
     mongoose.connect(process.env.MONGODB_URI)
         .then(() => console.log('✅ MongoDB Connected'))
@@ -22,8 +23,16 @@ if (process.env.MONGODB_URI) {
     console.log('📁 Running without database');
 }
 
+// Auth routes
+app.use('/api/auth', authRoutes);
+
 // API routes
 app.use('/api', apiRoutes);
+
+// Serve login page
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
 
 // Serve frontend
 app.get('*', (req, res) => {

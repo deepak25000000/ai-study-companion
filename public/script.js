@@ -1,3 +1,65 @@
+// ==================== AUTH CHECK ====================
+const authToken = localStorage.getItem('studyBuddyToken');
+const currentUser = JSON.parse(localStorage.getItem('studyBuddyUser') || 'null');
+
+if (!authToken) {
+    window.location.href = '/login.html';
+}
+
+function getAuthHeaders() {
+    const token = localStorage.getItem('studyBuddyToken');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    return headers;
+}
+
+// ==================== THEME TOGGLE ====================
+(function initTheme() {
+    const savedTheme = localStorage.getItem('studyBuddyTheme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const themeIcon = document.getElementById('themeIcon');
+    if (themeIcon) {
+        themeIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+})();
+
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('studyBuddyTheme', next);
+        const icon = document.getElementById('themeIcon');
+        if (icon) icon.className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    });
+}
+
+// ==================== USER PROFILE ====================
+(function initUserProfile() {
+    if (!currentUser) return;
+    const userNameEl = document.getElementById('userName');
+    const userEmailEl = document.getElementById('userEmail');
+    const userAvatarEl = document.getElementById('userAvatar');
+
+    if (userNameEl) userNameEl.textContent = currentUser.name || 'User';
+    if (userEmailEl) userEmailEl.textContent = currentUser.email || '';
+    if (userAvatarEl && currentUser.avatar) {
+        userAvatarEl.innerHTML = `<img src="${currentUser.avatar}" alt="Avatar">`;
+    }
+})();
+
+// Logout
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('studyBuddyToken');
+        localStorage.removeItem('studyBuddyUser');
+        window.location.href = '/login.html';
+    });
+}
+
 // ==================== STATE ====================
 let currentMode = 'explain';
 let currentLevel = 'medium';
@@ -169,7 +231,7 @@ async function handleSend() {
 
             const res = await fetch('/api/study', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(body)
             });
             const data = await res.json();
@@ -180,7 +242,7 @@ async function handleSend() {
         } else {
             const res = await fetch('/api/chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     sessionId: currentSessionId,
                     message: topic,
@@ -725,7 +787,11 @@ function timeAgo(dateStr) {
 
 async function loadChatHistory() {
     try {
-        const res = await fetch('/api/chat/history');
+        let url = '/api/chat/history';
+        if (currentUser && currentUser.id) {
+            url += `?userId=${currentUser.id}`;
+        }
+        const res = await fetch(url, { headers: getAuthHeaders() });
         const data = await res.json();
         if (data.sessions && data.sessions.length > 0) {
             historyList.innerHTML = data.sessions.map(s => `

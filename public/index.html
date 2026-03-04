@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -107,12 +107,26 @@
                 Clear Conversation
             </button>
 
+            <!-- User Profile -->
+            <div class="sidebar-user" id="sidebarUser">
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="userName">Guest</span>
+                    <span class="user-email" id="userEmail">Not signed in</span>
+                </div>
+                <button class="logout-btn" id="logoutBtn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+
             <div class="sidebar-footer">
                 <div class="status">
                     <span class="status-dot"></span>
                     <span>AI Ready</span>
                 </div>
-                <span class="version">v1.0</span>
+                <span class="version">v2.0</span>
             </div>
         </aside>
 
@@ -134,6 +148,11 @@
                     <button class="difficulty-btn active" data-level="medium">Medium</button>
                     <button class="difficulty-btn" data-level="complex">Complex</button>
                 </div>
+
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
             </div>
 
             <!-- Quiz Options Bar (visible only in quiz mode) -->

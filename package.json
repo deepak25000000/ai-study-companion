@@ -10,9 +10,13 @@
     "dependencies": {
         "@google/generative-ai": "^0.24.1",
         "@huggingface/inference": "^4.13.12",
+        "bcryptjs": "^3.0.3",
         "cors": "^2.8.6",
         "dotenv": "^16.6.1",
         "express": "^4.22.1",
+        "firebase": "^12.10.0",
+        "firebase-admin": "^13.7.0",
+        "jsonwebtoken": "^9.0.3",
         "mongodb": "^7.1.0",
         "mongoose": "^8.23.0"
     },
