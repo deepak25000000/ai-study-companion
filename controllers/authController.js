@@ -7,6 +7,13 @@ exports.register = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
 
+        // Check MongoDB connection first
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState !== 1) {
+            console.error('❌ Registration failed: MongoDB not connected (state:', mongoose.connection.readyState, ')');
+            return res.status(503).json({ error: 'Database not connected. Please check server configuration.' });
+        }
+
         // Validate required fields
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Name, email, and password are required.' });
@@ -65,6 +72,13 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        // Check MongoDB connection first
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState !== 1) {
+            console.error('❌ Login failed: MongoDB not connected (state:', mongoose.connection.readyState, ')');
+            return res.status(503).json({ error: 'Database not connected. Please check server configuration.' });
+        }
+
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required.' });
         }
@@ -118,6 +132,13 @@ exports.login = async (req, res) => {
 exports.googleAuth = async (req, res) => {
     try {
         const { idToken, name, email, photoURL, uid } = req.body;
+
+        // Check MongoDB connection first
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState !== 1) {
+            console.error('❌ Google auth failed: MongoDB not connected (state:', mongoose.connection.readyState, ')');
+            return res.status(503).json({ error: 'Database not connected. Please check server configuration.' });
+        }
 
         if (!email || !uid) {
             return res.status(400).json({ error: 'Google authentication data is incomplete.' });
