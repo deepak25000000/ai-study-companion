@@ -23,6 +23,22 @@ if (process.env.MONGODB_URI) {
     console.log('📁 Running without database');
 }
 
+// Health check - verify deployment configuration
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        mongoState: mongoose.connection.readyState,
+        env: {
+            hasMongoDB: !!process.env.MONGODB_URI,
+            hasJwtSecret: !!process.env.JWT_SECRET,
+            hasGeminiKey: !!process.env.GEMINI_API_KEY,
+            nodeEnv: process.env.NODE_ENV || 'development'
+        },
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Auth routes
 app.use('/api/auth', authRoutes);
 
